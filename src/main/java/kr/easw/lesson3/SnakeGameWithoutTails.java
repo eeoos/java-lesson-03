@@ -49,7 +49,51 @@ public class SnakeGameWithoutTails {
      * 만약 사용자의 입력이 종료(0)였다면, false값을 반환하여 게임을 종료해야 합니다.
      */
     private static boolean nextDirection(String keyword) {
-        throw new RuntimeException("이 코드 라인을 지우고, 이곳에서 작성하십시오.");
+
+        board[0][0] = 1; // (0,0) 스네이크 블럭으로 바꾸는 용도
+
+        if(keyword.equals("0")){
+            return false;
+        }else{
+            int dx = 0, dy = 0;
+            if(keyword.equals("r")) dy = 1;
+            else if(keyword.equals("l")) dy = -1;
+            else if(keyword.equals("u")) dx = -1;
+            else if(keyword.equals("d")) dx = 1;
+
+            int newX = location.getX() + dx;
+            int newY = location.getY() + dy;
+
+            if(newX >= 0 && newX < BOARD_SIZE && newY >= 0 && newY < BOARD_SIZE){
+                location = new SnakeLocation(newX, newY);
+                item(newX, newY);
+                board[newX][newY] = 1;
+            }
+        }
+        return true;
+    }
+
+
+    private static void item(int x, int y){
+        if(board[x][y] == 2){
+            score++;
+            board[x][y] = 0;
+        }
+    }
+
+    private static SnakeLocation move(int x, int y){
+        if(x >= BOARD_SIZE){
+            return location.adjust(0, -1);
+        }else if(y >= BOARD_SIZE){
+            return location.adjust(-1, 0);
+        }else if(x <= -1){
+            return location.adjust(0, 1);
+        }else if(y <= -1){
+            return location.adjust(1, 0);
+        }
+
+
+        return location.adjust(x,y);
     }
 
     private static void printBoard() {
@@ -70,7 +114,7 @@ public class SnakeGameWithoutTails {
                         System.out.print("◼");
                         break;
                     case 2:
-                        System.out.println("* ");
+                        System.out.print("* ");
                         break;
                 }
             }
@@ -84,7 +128,7 @@ public class SnakeGameWithoutTails {
         for (int i = 0; i < toPlace; i++) {
             int retry = 0;
             while (retry < 5) {
-                SnakeLocation locate = new SnakeLocation(RANDOM.nextInt() * BOARD_SIZE, RANDOM.nextInt() * BOARD_SIZE);
+                SnakeLocation locate = new SnakeLocation((int) (RANDOM.nextDouble() * (BOARD_SIZE - 1)), (int) (RANDOM.nextDouble() * (BOARD_SIZE - 1)));
                 if (board[locate.getX()][locate.getY()] != 0) {
                     retry++;
                     continue;
